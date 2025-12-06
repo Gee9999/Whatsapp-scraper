@@ -1,17 +1,23 @@
 import streamlit as st
-from scraper.whatsapp import WhatsAppScraper
+import threading
+from scraper.whatsapp import open_whatsapp_and_prepare
 
-st.set_page_config(page_title="Proto WhatsApp Scraper", layout="wide")
+st.set_page_config(page_title="Proto WhatsApp Selenium", page_icon="💬")
 
-st.title("Proto WhatsApp Image Scraper")
+st.title("💬 Proto WhatsApp Scraper (Selenium, basic)")
 
-if "scraper" not in st.session_state:
-    st.session_state.scraper = WhatsAppScraper()
+st.write(
+    "1️⃣ Click the button below to open WhatsApp Web in Chrome.\n"
+    "2️⃣ Scan the QR code.\n"
+    "3️⃣ Click the chat whose photos you eventually want to download.\n\n"
+    "Right now this version only opens WhatsApp reliably. We’ll add the photo download step next."
+)
+
+def run_selenium():
+    open_whatsapp_and_prepare()
 
 if st.button("Open WhatsApp Web"):
-    st.session_state.scraper.open_whatsapp()
-
-if st.button("Scrape Images"):
-    st.session_state.scraper.scrape_images()
-
-st.write("Images will be saved to the exports/ folder.")
+    st.success("Launching Chrome with WhatsApp Web…")
+    threading.Thread(target=run_selenium, daemon=True).start()
+else:
+    st.info("Waiting for you to click the button…")
